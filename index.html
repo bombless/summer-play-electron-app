@@ -6,7 +6,15 @@
     <title>Summer Play</title>
   </head>
   <body>
-    <div id="container"></div> 
+    <div id="content">
+      <div id="container"></div>
+      <div id="pannel">
+        <ul id="tabs">
+          <li>全国</li>
+        </ul>
+        <ol class="pannel" id="city-pannel" data-name="全国"></ol>
+      </div>
+    </div>
 
     <!-- You can also require other files to run in this process -->
     <script type="text/javascript">
@@ -22,8 +30,14 @@
     <script src="./renderer.js"></script>
     <style>
       body { margin: 0; }
-      window { width: 900px; height: 900px; }
-      #container {width: 900px; height: 900px; }
+      #content { position: relative; }
+      window, #content { width: 1500px; height: 900px; }
+      #container { position: absolute; left: 0; width: 1200px; height: 900px; }
+      #pannel { position: absolute; left: 1200px; height: 900px; }
+      .pannel { overflow-y: scroll; }
+      #pannel li { cursor: pointer; }
+      #city-pannel { display: block; }
+      #province-pannel { display: none; }
     </style>
   </body>
 </html>

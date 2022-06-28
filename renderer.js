@@ -17,13 +17,86 @@
             "version": '2.0'  // Loca 版本
         },
     }).then((AMap)=>{
-        var map = new AMap.Map('container');
-        init(AMap);
+        const map = new AMap.Map('container');
+        init(AMap, map);
         //map.addControl(new AMap.Scale());
     }).catch((e)=>{
         console.error(e);  //加载错误提示
     });
-    function init(AMap) {
+    async function init(AMap, map) {
         const fetchData = require('./fetch.ts');
-        fetchData();
+        const tabs = document.querySelector('#tabs');
+        const data = await fetchData();
+        const provinces = new Map;
+        const pannel = document.querySelector('#pannel');
+        const cityOl = document.createElement('ol');
+        tabs.addEventListener('click', e => {
+            pannel.querySelectorAll('.pannel').forEach(pannel => {
+                console.log("e.target === pannel", e.target, pannel, );
+                console.log(e.target.textContent, pannel.dataset.name);
+                if (e.target.textContent === pannel.dataset.name) {
+                    pannel.style.display = 'block';
+                }
+                else {
+                    pannel.style.display = 'none';
+                }
+            })
+            console.log(e.target);
+        })
+        for (const item of data) {
+            let province;
+            if (provinces.has(item.province)) {
+                province = provinces.get(item.province);
+            } else {
+                const provincePannel = document.createElement('ol');
+                provincePannel.className = 'pannel';
+                provincePannel.dataset.name = item.province;
+                provincePannel.title = item.province;
+                provincePannel.style.display = 'none';
+                pannel.appendChild(provincePannel);
+                const btn = document.createElement('li');
+                btn.textContent = item.province;
+                tabs.appendChild(btn);
+                province = provincePannel;
+                provinces.set(item.province, province);
+            }
+            const cityLi = document.createElement('li');
+            cityLi.textContent = item.average + ' ' + item.province + item.city;
+            cityOl.appendChild(cityLi);
+            const provinceLi = document.createElement('li');
+            provinceLi.textContent = item.average + ' ' + item.province + item.city;
+            //console.log('province', province);
+            province.appendChild(provinceLi);
+            AMap.plugin('AMap.Geocoder', function() {
+                var geocoder = new AMap.Geocoder({
+                  // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+                  city: item.province + item.city
+                })
+              
+                geocoder.getLocation(item.city + '政府', function(status, result) {
+                  if (status === 'complete' && result.info === 'OK') {
+                    //console.log(result);
+                    //console.log(result.geocodes[0].location.pos);
+                    var marker = new AMap.Marker({
+                        icon: 'http://vdata.amap.com/icons/b18/1/2.png',
+                        position: result.geocodes[0].location,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                        title: item.province + item.city,
+                    });
+                    //console.log(item.province + item.city, marker);
+                    
+                    // 将创建的点标记添加到已有的地图实例：
+                    map.add(marker);
+                    function zoom() {
+                        map.setZoomAndCenter(11, result.geocodes[0].location);
+                    }
+                    cityLi.addEventListener('click', zoom);
+                    provinceLi.addEventListener('click', zoom);
+                    //map.setZoomAndCenter(11, result.geocodes[0].location);
+
+                  }
+                })
+            });
+            //break
+        }
+        pannel.appendChild(cityOl);
     }

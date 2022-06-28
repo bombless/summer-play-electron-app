@@ -6,10 +6,11 @@ module.exports = function() {
     return axios
     .get('http://waptianqi.2345.com/temperature-rank-rev.htm')
     .then(res => {
-        console.log(`statusCode: ${res.status}`);
-        console.log(res.data);
+        //console.log(`statusCode: ${res.status}`);
+        //console.log(res.data);
         const root = parse(res.data);
         const list = root.querySelector('.temperList');
+        const ret = [];
         for (const tr of list.childNodes) {
             const nodes = tr.childNodes;
             const items = {
@@ -18,8 +19,10 @@ module.exports = function() {
                 range: nodes[2].textContent,
                 average: nodes[3].textContent,
             };
-            console.log(items);
+            //console.log(items);
+            ret.push(items);
         }
+        return ret;
     })
     .catch(error => {
         console.error(error);
