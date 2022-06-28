@@ -66,7 +66,8 @@
         return marker;        
     }
     async function init(AMap, map) {
-        const fetchData = require('./fetch.ts');
+        const fetchData = require('./fetch.ts').cities;
+        const weather = require('./fetch.ts').weather;
         const tabs = document.querySelector('#tabs');
         const data = await fetchData();
         const provinces = new Map;

@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports.cities = function() {
     const axios = require('axios');
     const parse = require('node-html-parser').parse;
     
@@ -13,8 +13,11 @@ module.exports = function() {
         const ret = [];
         for (const tr of list.childNodes) {
             const nodes = tr.childNodes;
+            const link = nodes[1].querySelector('a');
+            console.log(link.getAttribute('href'));
             const items = {
-                city: nodes[1].querySelector('a').textContent,
+                city: link.textContent,
+                link: 'http://waptianqi.2345.com' + link.getAttribute('href'),
                 province: nodes[1].querySelector('i').textContent,
                 range: nodes[2].textContent,
                 average: nodes[3].textContent,
@@ -29,3 +32,20 @@ module.exports = function() {
     });
 
 };
+module.exports.weather = function(links) {
+    Promise.all(links.map(link => {
+        return axios
+        .get('http://waptianqi.2345.com' + link)
+        .then(res => {
+            const root = parse(res.data);
+            const list = root.querySelector('.phrase').map(x => x.textContent);
+            console.log(list);
+            return res.data;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    }))
+
+}
