@@ -1,22 +1,19 @@
 {
-  "name": "electron-quick-start",
+  "name": "summper-play",
   "version": "1.0.0",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron --trace-warnings ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^14.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "node-fetch": "^3.2.6",
+    "node-html-parser": "^5.3.3"
   }
 }

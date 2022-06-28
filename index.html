@@ -2,17 +2,28 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title>Hello World!</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"> 
+    <title>Summer Play</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
+    <div id="container"></div> 
 
     <!-- You can also require other files to run in this process -->
+    <script type="text/javascript">
+      window._AMapSecurityConfig = {
+        securityJsCode:'0577c85c7df56b0693c755938eb212f5',
+      }
+    </script>
+    <!--
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=bd025ef2a45752cd896864d70447a76f"></script>
+    
+    -->
+    <script src="https://webapi.amap.com/loader.js"></script>
     <script src="./renderer.js"></script>
+    <style>
+      body { margin: 0; }
+      window { width: 900px; height: 900px; }
+      #container {width: 900px; height: 900px; }
+    </style>
   </body>
 </html>

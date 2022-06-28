@@ -8,6 +8,8 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
       preload: path.join(__dirname, 'preload.js')
     }
   })
@@ -36,7 +38,12 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
+  console.log('window-all-closed')
+  app.quit()
+  //if (process.platform !== 'darwin') app.quit()
+})
+app.on('before-quit', function () {
+  console.log('before-quit')
 })
 
 // In this file you can include the rest of your app's specific main process
