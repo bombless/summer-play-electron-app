@@ -59,7 +59,7 @@
                 const btn = document.createElement('li');
                 btn.textContent = item.province;
                 tabs.appendChild(btn);
-                province = provincePannel;
+                province = { dom: provincePannel };
                 provinces.set(item.province, province);
             }
             const cityLi = document.createElement('li');
@@ -68,7 +68,7 @@
             cityLi.title = JSON.stringify(item);
             const provinceLi = document.createElement('li');
             provinceLi.textContent = item.average + ' ' + item.province + item.city;
-            province.appendChild(provinceLi);
+            province.dom.appendChild(provinceLi);
             provinceLi.title = JSON.stringify(item);
             AMap.plugin('AMap.Geocoder', function() {
                 var geocoder = new AMap.Geocoder({
