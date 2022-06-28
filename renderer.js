@@ -65,9 +65,34 @@
         map.add(marker);
         return marker;        
     }
+    function options(trigger) {
+        const weather = require('./fetch.ts').weather;
+        const element = document.createElement('select');
+        const all = ['查看全部', '七天内有雨', '七天内无雨', '连续三天无雨', '七天内五天无雨', '七天内三天无雨'];
+
+        for (const option of all) {
+            const node = document.createElement('option');
+            node.textContent = node.value = option;
+            element.appendChild(node);
+        }
+
+        element.addEventListener('change', () => {
+            //console.log(element.parentElement, element.parentElement.querySelectorAll('li'))
+            const nodeList = element.parentElement.querySelectorAll('li');
+            const links = [].slice.call(nodeList).map(x => x.dataset.link);
+            //console.log(links);
+            weather(links).then(list => {
+                switch (element.value) {
+                    case '查看全部': return trigger([...Array(links.length).keys()]);
+                }
+            });
+        });
+
+        return element;
+
+    }
     async function init(AMap, map) {
         const fetchData = require('./fetch.ts').cities;
-        const weather = require('./fetch.ts').weather;
         const tabs = document.querySelector('#tabs');
         const data = await fetchData();
         const provinces = new Map;
@@ -97,6 +122,7 @@
                 province = provinces.get(item.province);
             } else {
                 const provincePannel = document.createElement('ol');
+                provincePannel.appendChild(options(() => {}));
                 provincePannel.className = 'pannel';
                 provincePannel.dataset.name = item.province;
                 provincePannel.style.display = 'none';
@@ -112,6 +138,7 @@
             cityOl.appendChild(cityLi);
             cityLi.title = JSON.stringify(item);
             const provinceLi = document.createElement('li');
+            provinceLi.dataset.link = item.link;
             provinceLi.textContent = item.average + ' ' + item.province + item.city;
             province.dom.appendChild(provinceLi);
             provinceLi.title = JSON.stringify(item);
@@ -133,7 +160,7 @@
                 });
                 
                  // 打开信息窗体
-                console.log(marker);
+                //console.log(marker);
                 infoWindow.open(map, marker._position);
                 map.setFitView(provinces.get(item.province).cities);
             }

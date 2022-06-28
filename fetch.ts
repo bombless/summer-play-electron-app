@@ -1,23 +1,22 @@
+
+const axios = require('axios');
+const parse = require('node-html-parser').parse;
 module.exports.cities = function() {
-    const axios = require('axios');
-    const parse = require('node-html-parser').parse;
-    
-    
     return axios
     .get('http://waptianqi.2345.com/temperature-rank-rev.htm')
     .then(res => {
         //console.log(`statusCode: ${res.status}`);
         //console.log(res.data);
+        //console.log(res);
         const root = parse(res.data);
         const list = root.querySelector('.temperList');
         const ret = [];
         for (const tr of list.childNodes) {
             const nodes = tr.childNodes;
             const link = nodes[1].querySelector('a');
-            console.log(link.getAttribute('href'));
             const items = {
                 city: link.textContent,
-                link: 'http://waptianqi.2345.com' + link.getAttribute('href'),
+                link: link.getAttribute('href'),
                 province: nodes[1].querySelector('i').textContent,
                 range: nodes[2].textContent,
                 average: nodes[3].textContent,
@@ -33,12 +32,26 @@ module.exports.cities = function() {
 
 };
 module.exports.weather = function(links) {
-    Promise.all(links.map(link => {
+    return Promise.all(links.map(link => {
+        if (!link) return Promise.reject();
         return axios
-        .get('http://waptianqi.2345.com' + link)
+        .request({
+            method: 'GET',
+            url: 'http://waptianqi.2345.com' + link,
+            responseType: 'arraybuffer',
+            reponseEncoding: 'binary'
+        })
+        //.get('http://waptianqi.2345.com' + link)
         .then(res => {
-            const root = parse(res.data);
-            const list = root.querySelector('.phrase').map(x => x.textContent);
+            const data = res.data;
+            //console.log('data', res.data);
+            const html = new TextDecoder("gbk").decode(data);
+            //console.log('html', html);
+            const root = parse(html);
+            //console.log('x', root);
+            //window.x = root;
+            //console.log(res);
+            const list = [].slice.call(root.querySelectorAll('.days15-weather .phrase')).map(x => x.textContent.indexOf('雨') > -1);
             console.log(list);
             return res.data;
         })
