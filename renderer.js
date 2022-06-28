@@ -29,10 +29,12 @@
         const data = await fetchData();
         const provinces = new Map;
         const pannel = document.querySelector('#pannel');
+        pannel.className = 'pannel';
         const cityOl = document.createElement('ol');
+        cityOl.dataset.name = '全国';
+        cityOl.className = 'pannel';
         tabs.addEventListener('click', e => {
             pannel.querySelectorAll('.pannel').forEach(pannel => {
-                console.log("e.target === pannel", e.target, pannel, );
                 console.log(e.target.textContent, pannel.dataset.name);
                 if (e.target.textContent === pannel.dataset.name) {
                     pannel.style.display = 'block';
