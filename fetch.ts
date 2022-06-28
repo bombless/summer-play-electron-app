@@ -52,8 +52,8 @@ module.exports.weather = function(links) {
             //window.x = root;
             //console.log(res);
             const list = [].slice.call(root.querySelectorAll('.days15-weather .phrase')).map(x => x.textContent.indexOf('雨') > -1);
-            console.log(list);
-            return res.data;
+            //console.log(list);
+            return list;
         })
         .catch(error => {
             console.error(error);
