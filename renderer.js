@@ -24,6 +24,7 @@
         console.error(e);  //加载错误提示
     });
     async function init(AMap, map) {
+        let markerCount = 0;
         const fetchData = require('./fetch.ts');
         const tabs = document.querySelector('#tabs');
         const data = await fetchData();
@@ -88,6 +89,10 @@
                     
                     // 将创建的点标记添加到已有的地图实例：
                     map.add(marker);
+                    markerCount += 1;
+                    if (markerCount === data.length) {
+                        map.setFitView();
+                    }
                     function zoom() {
                         map.setZoomAndCenter(11, result.geocodes[0].location);
                     }
