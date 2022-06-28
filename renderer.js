@@ -51,7 +51,6 @@
                 const provincePannel = document.createElement('ol');
                 provincePannel.className = 'pannel';
                 provincePannel.dataset.name = item.province;
-                provincePannel.title = item.province;
                 provincePannel.style.display = 'none';
                 pannel.appendChild(provincePannel);
                 const btn = document.createElement('li');
@@ -63,17 +62,18 @@
             const cityLi = document.createElement('li');
             cityLi.textContent = item.average + ' ' + item.province + item.city;
             cityOl.appendChild(cityLi);
+            cityLi.title = JSON.stringify(item);
             const provinceLi = document.createElement('li');
             provinceLi.textContent = item.average + ' ' + item.province + item.city;
-            //console.log('province', province);
             province.appendChild(provinceLi);
+            provinceLi.title = JSON.stringify(item);
             AMap.plugin('AMap.Geocoder', function() {
                 var geocoder = new AMap.Geocoder({
                   // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
                   city: item.province + item.city
                 })
               
-                geocoder.getLocation(item.city + '政府', function(status, result) {
+                geocoder.getLocation(item.province + '省' + item.city + '政府', function(status, result) {
                   if (status === 'complete' && result.info === 'OK') {
                     //console.log(result);
                     //console.log(result.geocodes[0].location.pos);
