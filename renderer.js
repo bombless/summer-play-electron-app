@@ -29,14 +29,17 @@
         const tabs = document.querySelector('#tabs');
         const data = await fetchData();
         const provinces = new Map;
+        const cities = [];
         const pannel = document.querySelector('#pannel');
         pannel.className = 'pannel';
         const cityOl = document.createElement('ol');
         cityOl.dataset.name = '全国';
         cityOl.className = 'pannel';
+        provinces.set('全国', { dom: cityOl, cities })
         tabs.addEventListener('click', e => {
             pannel.querySelectorAll('.pannel').forEach(pannel => {
-                console.log(e.target.textContent, pannel.dataset.name);
+                // console.log(e.target.textContent, pannel.dataset.name);
+                map.setFitView(provinces.get(e.target.textContent).cities);
                 if (e.target.textContent === pannel.dataset.name) {
                     pannel.style.display = 'block';
                 }
@@ -44,7 +47,7 @@
                     pannel.style.display = 'none';
                 }
             })
-            console.log(e.target);
+            // console.log(e.target);
         })
         for (const item of data) {
             let province;
@@ -59,7 +62,7 @@
                 const btn = document.createElement('li');
                 btn.textContent = item.province;
                 tabs.appendChild(btn);
-                province = { dom: provincePannel };
+                province = { dom: provincePannel, cities: [] };
                 provinces.set(item.province, province);
             }
             const cityLi = document.createElement('li');
@@ -89,12 +92,15 @@
                     
                     // 将创建的点标记添加到已有的地图实例：
                     map.add(marker);
+                    province.cities.push(marker);
+                    cities.push(marker);
                     markerCount += 1;
                     if (markerCount === data.length) {
                         map.setFitView();
                     }
                     function zoom() {
-                        map.setZoomAndCenter(11, result.geocodes[0].location);
+                        //map.setZoomAndCenter(11, result.geocodes[0].location);
+                        map.setFitView(provinces.get(item.province).cities);
                     }
                     cityLi.addEventListener('click', zoom);
                     provinceLi.addEventListener('click', zoom);
