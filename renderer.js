@@ -24,6 +24,7 @@
         console.error(e);  //加载错误提示
     });
     async function init(AMap, map) {
+        const weather = new AMap.Weather();
         let markerCount = 0;
         const fetchData = require('./fetch.ts');
         const tabs = document.querySelector('#tabs');
@@ -99,6 +100,13 @@
                 }
                 function zoom() {
                     //map.setZoomAndCenter(11, result.geocodes[0].location);
+
+                    const infoWindow = new AMap.InfoWindow({
+                        content: item.city + '<br/>' + item.range  //传入 dom 对象，或者 html 字符串
+                    });
+                    
+                     // 打开信息窗体
+                    infoWindow.open(map, result.geocodes[0].location);
                     map.setFitView(provinces.get(item.province).cities);
                 }
                 cityLi.addEventListener('click', zoom);
