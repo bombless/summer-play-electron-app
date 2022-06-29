@@ -60,8 +60,10 @@ class Cities {
                 province.cities.push(marker);
                 cities.push(marker);
                 ret.push({
-                    cityLi,
-                    provinceLi,
+                    onClick(zoom) {
+                        cityLi.addEventListener('click', zoom);
+                        provinceLi.addEventListener('click', zoom);
+                    },
                     ...item,
                 });
             }

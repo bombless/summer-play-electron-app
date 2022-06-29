@@ -65,8 +65,7 @@
                 infoWindow.open(map, item.position);
                 map.setFitView(cities.getProvinceCities(item.province));
             }
-            item.cityLi.addEventListener('click', zoom);
-            item.provinceLi.addEventListener('click', zoom);
+            item.onClick(zoom);
         }
         map.setFitView();
     }
