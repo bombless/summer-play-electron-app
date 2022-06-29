@@ -31,7 +31,8 @@
         });
 
         // 将创建的点标记添加到已有的地图实例：
-        map.add(marker);
+        const debounce = require('debounce');
+        debounce(() => { map.add(marker); map.setFitView(); }, 20).call();
         return marker;
     }
     
@@ -67,6 +68,5 @@
             }
             item.onClick(zoom);
         }
-        map.setFitView();
     }
     

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "debounce": "^1.2.1",
     "electron-localstorage": "^1.0.5",
     "node-fetch": "^3.2.6",
     "node-html-parser": "^5.3.3"
