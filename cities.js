@@ -18,7 +18,7 @@ class Cities {
             provinces.set('全国', { dom: cityOl, cities })
             tabs.addEventListener('click', e => {
                 pannel.querySelectorAll('.pannel').forEach(pannel => {
-                    console.log(e.target.textContent, pannel.dataset.name);
+                    //console.log(e.target.textContent, pannel.dataset.name);
                     onFocus(provinces.get(e.target.textContent).cities);
                     if (e.target.textContent === pannel.dataset.name) {
                         pannel.style.display = 'block';
@@ -30,7 +30,7 @@ class Cities {
             // console.log(e.target);
             })
             const ret = [];
-            for (const item of items.slice(0, 50)) {
+            for (const item of items.slice(0, 80)) {
                 let province;
                 if (provinces.has(item.province)) {
                     province = provinces.get(item.province);
@@ -66,7 +66,7 @@ class Cities {
                 });
             }
             pannel.appendChild(cityOl);
-            console.log(cityOl);
+            //console.log(cityOl);
             return ret;
         })
     }

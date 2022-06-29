@@ -29,8 +29,6 @@
             position: info.position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
             title: info.province + info.city,
         });
-        
-        map.setFitView();
 
         // 将创建的点标记添加到已有的地图实例：
         map.add(marker);
@@ -70,5 +68,6 @@
             item.cityLi.addEventListener('click', zoom);
             item.provinceLi.addEventListener('click', zoom);
         }
+        map.setFitView();
     }
     

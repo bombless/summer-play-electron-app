@@ -55,7 +55,7 @@ module.exports.cities = function() {
                 range: nodes[2].textContent,
                 average: nodes[3].textContent,
             };
-            console.log(item);
+            //console.log(item);
             ret.push(item);
         }
         return ret;
