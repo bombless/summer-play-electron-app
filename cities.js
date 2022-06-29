@@ -30,7 +30,7 @@ class Cities {
             // console.log(e.target);
             })
             const ret = [];
-            for (const item of items) {
+            for (const item of items.slice(0, 80)) {
                 let province;
                 if (provinces.has(item.province)) {
                     province = provinces.get(item.province);
