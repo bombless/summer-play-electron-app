@@ -24,7 +24,7 @@
         console.error(e);  //加载错误提示
     });
     function mark(map, info) {
-        var marker = new AMap.Marker({
+        const marker = new AMap.Marker({
             icon: 'http://vdata.amap.com/icons/b18/1/2.png',
             position: info.position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
             title: info.province + info.city,
