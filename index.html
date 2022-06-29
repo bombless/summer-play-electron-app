@@ -9,6 +9,11 @@
     <div id="content">
       <div id="container"></div>
       <div id="pannel">
+        <fieldset>
+          <legend>个人信息：</legend>
+          <label for="departurePoint">出发地：</label>
+          <input id="departurePoint"></input>
+        </fieldset>
         <ul id="tabs">
           <li>全国</li>
         </ul>
@@ -26,6 +31,7 @@
     
     -->
     <script src="https://webapi.amap.com/loader.js"></script>
+    <script>window.storage = require('electron-localstorage');</script>
     <script src="./renderer.js"></script>
     <style>
       body { margin: 0; }

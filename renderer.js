@@ -137,6 +137,12 @@
 
     }
     async function init(AMap, map) {
+        const departurePoint = document.querySelector('#departurePoint');
+        departurePoint.addEventListener('change', () => {
+            storage.setItem('departurePoint', departurePoint.value);
+        });
+        departurePoint.value = storage.getItem('departurePoint');
+        
         const fetchData = require('./fetch.ts').cities;
         const tabs = document.querySelector('#tabs');
         const data = await fetchData();
