@@ -10,16 +10,15 @@ class Cities {
         const fetchData = require('./fetch').cities;
         this.items = fetchData().then(items => {
             const provinces = this.provinces;
-    
-            const cities = [];
             const cityOl = document.createElement('ol');
             cityOl.dataset.name = '全国';
             cityOl.className = 'pannel';
-            provinces.set('全国', { dom: cityOl, cities })
+            provinces.set('全国', { dom: cityOl, cities: null })
             tabs.addEventListener('click', e => {
                 pannel.querySelectorAll('.pannel').forEach(pannel => {
                     //console.log(e.target.textContent, pannel.dataset.name);
-                    onFocus(provinces.get(e.target.textContent).cities);
+                    const debounce = require('debounce');
+                    debounce(() => onFocus(provinces.get(e.target.textContent).cities), 20).call();
                     if (e.target.textContent === pannel.dataset.name) {
                         pannel.style.display = 'block';
                     }
@@ -48,17 +47,19 @@ class Cities {
                     provinces.set(item.province, province);
                 }
                 const cityLi = document.createElement('li');
-                cityLi.textContent = item.average + ' ' + item.province + item.city;
+                const re = /\d+℃～(\d+℃)/;
+                const temperature = item.range.match(re)[1];
+                
+                cityLi.textContent = temperature + ' ' + item.province + item.city;
                 cityOl.appendChild(cityLi);
                 cityLi.title = JSON.stringify(item);
                 const provinceLi = document.createElement('li');
                 provinceLi.dataset.link = item.link;
-                provinceLi.textContent = item.average + ' ' + item.province + item.city;
+                provinceLi.textContent = temperature + ' ' + item.province + item.city;
                 province.dom.appendChild(provinceLi);
                 provinceLi.title = JSON.stringify(item);
                 const marker = mark(item);
                 province.cities.push(marker);
-                cities.push(marker);
                 ret.push({
                     onClick(zoom) {
                         cityLi.addEventListener('click', zoom);
