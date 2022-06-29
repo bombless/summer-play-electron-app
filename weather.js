@@ -1,5 +1,5 @@
 function options() {
-    const weather = require('./fetch.ts').weather;
+    const weather = require('./fetch').weather;
     const element = document.createElement('select');
     const all = ['查看全部', '七天内三天无雨', '七天内五天无雨', '连续三天无雨', '七天内有雨', '七天内无雨'];
 

@@ -1,7 +1,37 @@
 
 const axios = require('axios');
 const parse = require('node-html-parser').parse;
+
+function regions() {
+    const geolocation = require('./region.json');
+    const data = {};
+    for (const province of geolocation.districts) {
+        const entry = province.name;
+        for (const city of province.districts) {
+            const key = city.name;
+            if (!data[entry]) {
+                data[entry] = {};
+            }
+            data[entry][key] = [city.center.longitude, city.center.latitude];
+        }
+    }
+
+    return (province, city) => {
+        for (const entry of Object.keys(data)) {
+            if (entry.indexOf(province) > -1) {
+                for (const key of Object.keys(data[entry])) {
+                    if (key.indexOf(city) > -1) {
+                        return data[entry][key];
+                    }
+                }
+            }
+        }
+    }
+
+}
+
 module.exports.cities = function() {
+    const getPosition = regions();
     return axios
     .get('http://waptianqi.2345.com/temperature-rank-rev.htm')
     .then(res => {
@@ -14,15 +44,19 @@ module.exports.cities = function() {
         for (const tr of list.childNodes) {
             const nodes = tr.childNodes;
             const link = nodes[1].querySelector('a');
-            const items = {
-                city: link.textContent,
+            const city = link.textContent;
+            const province = nodes[1].querySelector('i').textContent;
+            const position = getPosition(province, city);
+            const item = {
+                city,
+                province,
+                position,
                 link: link.getAttribute('href'),
-                province: nodes[1].querySelector('i').textContent,
                 range: nodes[2].textContent,
                 average: nodes[3].textContent,
             };
-            //console.log(items);
-            ret.push(items);
+            console.log(item);
+            ret.push(item);
         }
         return ret;
     })

@@ -8,7 +8,7 @@
     AMapLoader.load({
         "key": "bd025ef2a45752cd896864d70447a76f",          // 申请好的Web端开发者Key，首次调用 load 时必填
         "version": "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-        "plugins": ['AMap.Geocoder', 'AMap.Weather'],           // 需要使用的的插件列表，如比例尺'AMap.Scale'等
+        "plugins": [],           // 需要使用的的插件列表，如比例尺'AMap.Scale'等
         "AMapUI": {         // 是否加载 AMapUI，缺省不加载
         "version": '1.1',   // AMapUI 版本
         "plugins":['overlay/SimpleMarker'],       // 需要加载的 AMapUI ui插件
@@ -23,39 +23,10 @@
     }).catch((e)=>{
         console.error(e);  //加载错误提示
     });
-    function regions() {
-        const geolocation = require('./region.json');
-        const data = {};
-        for (const province of geolocation.districts) {
-            const entry = province.name;
-            for (const city of province.districts) {
-                const key = city.name;
-                if (!data[entry]) {
-                    data[entry] = {};
-                }
-                data[entry][key] = [city.center.longitude, city.center.latitude];
-            }
-        }
-
-        return (province, city) => {
-        for (const entry of Object.keys(data)) {
-            if (entry.indexOf(province) > -1) {
-                for (const key of Object.keys(data[entry])) {
-                    if (key.indexOf(city) > -1) {
-                        return data[entry][key];
-                    }
-                }
-            }
-        }
-        }
-
-    }
-    function mark(map, info, fit) {
-        const getPosition = regions();
-        const location = getPosition(info.province, info.city);
+    function mark(map, info) {
         var marker = new AMap.Marker({
             icon: 'http://vdata.amap.com/icons/b18/1/2.png',
-            position: location,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+            position: info.position,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
             title: info.province + info.city,
         });
         
@@ -63,70 +34,21 @@
 
         // 将创建的点标记添加到已有的地图实例：
         map.add(marker);
-        return marker;        
+        return marker;
     }
     
     async function init(AMap, map) {
-        const options = require('./weather.ts');
+        const options = require('./weather');
         const departurePoint = document.querySelector('#departurePoint');
         departurePoint.addEventListener('change', () => {
             storage.setItem('departurePoint', departurePoint.value);
         });
         departurePoint.value = storage.getItem('departurePoint');
-        
-        const fetchData = require('./fetch.ts').cities;
-        const tabs = document.querySelector('#tabs');
-        const data = await fetchData();
-        const provinces = new Map;
-        const cities = [];
-        const pannel = document.querySelector('#pannel');
-        pannel.className = 'pannel';
-        const cityOl = document.createElement('ol');
-        cityOl.dataset.name = '全国';
-        cityOl.className = 'pannel';
-        provinces.set('全国', { dom: cityOl, cities })
-        tabs.addEventListener('click', e => {
-        pannel.querySelectorAll('.pannel').forEach(pannel => {
-            // console.log(e.target.textContent, pannel.dataset.name);
-            map.setFitView(provinces.get(e.target.textContent).cities);
-            if (e.target.textContent === pannel.dataset.name) {
-                pannel.style.display = 'block';
-            }
-            else {
-                pannel.style.display = 'none';
-            }
-        })
-        // console.log(e.target);
-        })
-        for (const item of data) {
-            let province;
-            if (provinces.has(item.province)) {
-                province = provinces.get(item.province);
-            } else {
-                const provincePannel = document.createElement('ol');
-                provincePannel.appendChild(options());
-                provincePannel.className = 'pannel';
-                provincePannel.dataset.name = item.province;
-                provincePannel.style.display = 'none';
-                pannel.appendChild(provincePannel);
-                const btn = document.createElement('li');
-                btn.textContent = item.province;
-                tabs.appendChild(btn);
-                province = { dom: provincePannel, cities: [] };
-                provinces.set(item.province, province);
-            }
-            const cityLi = document.createElement('li');
-            cityLi.textContent = item.average + ' ' + item.province + item.city;
-            cityOl.appendChild(cityLi);
-            cityLi.title = JSON.stringify(item);
-            const provinceLi = document.createElement('li');
-            provinceLi.dataset.link = item.link;
-            provinceLi.textContent = item.average + ' ' + item.province + item.city;
-            province.dom.appendChild(provinceLi);
-            provinceLi.title = JSON.stringify(item);
-            const marker = mark(map, item);
-            province.cities.push(marker);
-            cities.push(marker);
+
+        const Cities = require('./cities');
+
+        const cities = new Cities(x => map.setFitView(x), info => mark(map, info));
+        for (const item of await cities.items) {
 
             const info = document.createElement('div');
             const cityInfo = document.createElement('div');
@@ -142,12 +64,11 @@
                 });
                 
                  // 打开信息窗体
-                //console.log(marker);
-                infoWindow.open(map, marker._position);
-                map.setFitView(provinces.get(item.province).cities);
+                infoWindow.open(map, item.position);
+                map.setFitView(cities.getProvinceCities(item.province));
             }
-            cityLi.addEventListener('click', zoom);
-            provinceLi.addEventListener('click', zoom);
+            item.cityLi.addEventListener('click', zoom);
+            item.provinceLi.addEventListener('click', zoom);
         }
-        pannel.appendChild(cityOl);
     }
+    
