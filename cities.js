@@ -18,7 +18,7 @@ class Cities {
                 pannel.querySelectorAll('.pannel').forEach(pannel => {
                     //console.log(e.target.textContent, pannel.dataset.name);
                     const debounce = require('debounce');
-                    debounce(() => onFocus(provinces.get(e.target.textContent).cities), 20).call();
+                    debounce(() => onFocus(provinces.get(e.target.textContent).cities), 30).call();
                     if (e.target.textContent === pannel.dataset.name) {
                         pannel.style.display = 'block';
                     }
@@ -29,7 +29,7 @@ class Cities {
             // console.log(e.target);
             })
             const ret = [];
-            for (const item of items.slice(0, 80)) {
+            for (const item of items.slice(0, 180)) {
                 let province;
                 if (provinces.has(item.province)) {
                     province = provinces.get(item.province);
