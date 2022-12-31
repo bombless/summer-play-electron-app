@@ -9,10 +9,10 @@ class Cities {
         pannel.className = 'pannel';
         const fetchData = require('./fetch').cities;
         this.items = fetchData().then(items => {
-            const provinces = this.provinces;
             const cityOl = document.createElement('ol');
             cityOl.dataset.name = '全国';
             cityOl.className = 'pannel';
+            const provinces = this.provinces;
             provinces.set('全国', { dom: cityOl, cities: null })
             tabs.addEventListener('click', e => {
                 pannel.querySelectorAll('.pannel').forEach(pannel => {
@@ -47,7 +47,7 @@ class Cities {
                     provinces.set(item.province, province);
                 }
                 const cityLi = document.createElement('li');
-                const re = /\d+℃～(\d+℃)/;
+                const re = /\d+℃～(-?\d+℃)/;
                 const temperature = item.range.match(re)[1];
                 
                 cityLi.textContent = temperature + ' ' + item.province + item.city;
